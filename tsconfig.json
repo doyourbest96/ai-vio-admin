@@ -21,15 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/sections/cadences/manage-cadence.jsx",
-    "src/components/Cadence/node.jsx",
-    "src/components/Cadence/PhoneNode.js",
-    "src/contexts/FilterLeadContext.tsx"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

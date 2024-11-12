@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
@@ -6,27 +6,21 @@ import { toast } from "react-toastify";
 import ToggleButton from "@/components/extends/ToggleButton";
 import Loading from "@/components/Loading";
 
-import {
-  getUsers,
-  updateOther,
-  UserModel,
-  getMe,
-} from "@/services/userService";
+import { deleteOrg, getOrgs, updateOrg, OrgModel } from "@/services/orgService";
 import { handleError, runService } from "@/utils/service_utils";
 
-const ManageStuff = () => {
-  const [me, setMe] = useState<UserModel>();
-  const [users, setUsers] = useState<UserModel[]>();
+const Dashboard = () => {
+  const [orgs, setOrgs] = useState<OrgModel[]>();
   const [loading, setLoading] = useState(false);
 
-  const fetchUsers = () => {
+  const fetchOrgs = () => {
     setLoading(true);
     runService(
       undefined,
-      getUsers,
+      getOrgs,
       (data) => {
-        console.log("users: ", data);
-        setUsers(data);
+        console.log("orgs: ", data);
+        setOrgs(data);
         setLoading(false);
       },
       (status, error) => {
@@ -34,13 +28,15 @@ const ManageStuff = () => {
         setLoading(false);
       }
     );
+  };
 
+  const handleDelete = (orgId: string) => {
     runService(
-      undefined,
-      getMe,
-      (data) => {
-        console.log("me: ", data);
-        setMe(data);
+      orgId,
+      deleteOrg,
+      () => {
+        setOrgs(orgs?.filter((org) => org.id !== orgId));
+        toast.success("Organization deleted successfully!");
       },
       (status, error) => {
         handleError(status, error);
@@ -48,17 +44,19 @@ const ManageStuff = () => {
     );
   };
 
-  const handleUpdate = (userData: UserModel) => {
+  const handleUpdate = (orgData: OrgModel) => {
     runService(
-      userData,
-      updateOther,
+      orgData,
+      updateOrg,
       (data) => {
-        setUsers(
-          users?.map((user) =>
-            user.id !== data.id ? user : { ...user, enabled: data.enabled }
+        setOrgs(
+          orgs?.map((org) =>
+            org.id !== data.id
+              ? org
+              : { ...org, isActive: data.isActive, isPremium: data.isPremium }
           )
         );
-        toast.success("User updated successfully!");
+        toast.success("Organization updated successfully!");
       },
       (status, error) => {
         handleError(status, error);
@@ -66,13 +64,8 @@ const ManageStuff = () => {
     );
   };
 
-  // const handleConfirmDelete = (user: UserModel) => {
-  //   setCurUser(user);
-  //   setDeleteUserModal(true);
-  // };
-
   useEffect(() => {
-    fetchUsers();
+    fetchOrgs();
   }, []);
   return (
     <>
@@ -88,83 +81,94 @@ const ManageStuff = () => {
                     scope="col"
                     className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
                   >
-                    First Name
+                    Creator Type
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Last Name
+                    Organization Name
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Email
+                    Size
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Title
+                    Created At
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Phone
+                    isActive
                   </th>
                   <th
                     scope="col"
-                    className="py-3.5 text-left text-sm font-semibold text-gray-900"
-                  ></th>
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    isPremium
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white overflow-auto">
-                {users &&
-                  users.map((user, index) => (
+                {orgs &&
+                  orgs.map((org, index) => (
                     <tr
                       key={index}
                       className="even:bg-blue-50 hover:bg-gray-300"
                     >
                       <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
-                        {user.firstName}
+                        {org.creatorType}
                       </td>
                       <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
-                        {user.lastName}
+                        {org.name}
                       </td>
                       <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
-                        {user.email}
+                        {org.size}
                       </td>
                       <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
-                        {user.title}
+                        {org.createdAt}
                       </td>
-                      <td className="whitespace-nowraptext-sm text-gray-500">
-                        {user.phone}
+                      <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+                        <ToggleButton
+                          checked={org.isActive ? org.isActive : false}
+                          handleChange={() => {
+                            handleUpdate({
+                              id: org.id,
+                              isActive: !org.isActive,
+                            });
+                          }}
+                        />
                       </td>
-                      <td className="py-2 flex flex-1 justify-center items-center gap-4">
-                        {me && user.id !== me.id ? (
-                          <>
-                            <ToggleButton
-                              checked={user.enabled ? user.enabled : false}
-                              handleChange={() => {
-                                handleUpdate({
-                                  id: user.id,
-                                  enabled: !user.enabled,
-                                });
-                              }}
-                            />
-                            <div
-                              className="p-1 rounded-md cursor-pointer hover:bg-gray-100"
-                            >
-                              <TrashIcon className="w-5 h-5 stroke-red-500" />
-                            </div>
-                          </>
-                        ) : (
-                          <div className="p-1 rounded-md cursor-pointer hover:bg-gray-100">
-                            Current User
-                          </div>
-                        )}
+                      <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+                        <ToggleButton
+                          checked={org.isPremium ? org.isPremium : false}
+                          handleChange={() =>
+                            handleUpdate({
+                              id: org.id,
+                              isPremium: !org.isPremium,
+                            })
+                          }
+                        />
+                      </td>
+                      <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+                        <div
+                          className="w-7 p-1 rounded-md cursor-pointer hover:bg-gray-100"
+                          onClick={() => handleDelete(org.id ?? "")}
+                        >
+                          <TrashIcon className="w-5 h-5 stroke-red-500" />
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -177,4 +181,4 @@ const ManageStuff = () => {
   );
 };
 
-export default ManageStuff;
+export default Dashboard;

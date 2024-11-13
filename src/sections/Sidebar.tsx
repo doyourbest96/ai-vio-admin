@@ -6,11 +6,15 @@ import { MdOutlineSpaceDashboard } from "react-icons/md";
 import { GoOrganization } from "react-icons/go";
 import { IoSettingsOutline } from "react-icons/io5";
 
-import { useEnv } from "@/contexts/EvnContext";
 import Logo from "@/components/Logo";
+
+import { useEnv } from "@/contexts/EvnContext";
+import { useOrg } from "@/contexts/OrgContext";
 
 const Sidebar = () => {
   const { openSidebar, setOpenSidebar } = useEnv();
+  const { setMode } = useOrg();
+
   return (
     <>
       <div
@@ -37,26 +41,23 @@ const Sidebar = () => {
             <span>Dashboard</span>
           </Link>
           <div className="flex flex-col">
-            <Link
-              href={"/orgs"}
-              className="p-2 flex flex-row items-center gap-2 cursor-pointer rounded-sm hover:bg-gray-200"
-            >
+            <p className="p-2 flex flex-row items-center gap-2 cursor-pointer rounded-sm hover:bg-gray-200">
               <GoOrganization className="w-5 h-5" />
               Organizations
-            </Link>
+            </p>
             <div className="flex flex-col indent-6 text-sm">
-              <Link
-                href={"/orgs/request"}
+              <p
                 className="p-2 cursor-pointer rounded-sm hover:bg-gray-200"
+                onClick={() => setMode("request")}
               >
                 Requesting Demo
-              </Link>
-              <Link
-                href={"/orgs/allowed"}
+              </p>
+              <p
                 className="p-2 cursor-pointer rounded-sm hover:bg-gray-200"
+                onClick={() => setMode("allowed")}
               >
                 Allowed Organizations
-              </Link>
+              </p>
             </div>
           </div>
           <p className="p-2 flex flex-row items-center gap-2 cursor-pointer rounded-sm hover:bg-gray-200">

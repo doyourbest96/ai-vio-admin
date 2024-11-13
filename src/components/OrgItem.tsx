@@ -1,6 +1,7 @@
 import { TrashIcon } from "@heroicons/react/24/outline";
 import ToggleButton from "@/components/extends/ToggleButton";
 import { OrgModel } from "@/services/orgService";
+import { getRelativeTime } from "@/utils/format";
 
 const OrgItem = ({ org, handleUpdate, handleDelete }: { org: OrgModel, handleUpdate: (orgData: OrgModel) => void, handleDelete: (orgId: string) => void }) => {
   return (
@@ -13,7 +14,7 @@ const OrgItem = ({ org, handleUpdate, handleDelete }: { org: OrgModel, handleUpd
           {org.size}
         </td>
         <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
-          {org.createdAt}
+          {getRelativeTime(org.createdAt ?? "")}
         </td>
         <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
           <ToggleButton
@@ -44,8 +45,8 @@ const OrgItem = ({ org, handleUpdate, handleDelete }: { org: OrgModel, handleUpd
           >
             <TrashIcon className="w-5 h-5 stroke-red-500" />
           </div>
-          {org.dmlType === "update" && (
-            <span className="absolute right-1 top-1 z-10 bg-green-500 text-white rounded-full px-2 py-1 text-xs">
+          {org.dmlType === "insert" && (
+            <span className="absolute right-2 top-2 z-10 bg-green-500 text-white rounded-full px-2 py-1 text-xs">
               New
             </span>
           )}

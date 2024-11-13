@@ -1,19 +1,13 @@
+import classNames from "classnames";
+
 import Loading from "@/components/Loading";
 import OrgItem from "@/components/OrgItem";
 
-import { OrgModel } from "@/services/orgService";
+import { useOrg } from "@/contexts/OrgContext";
 
-const OrgTable = ({
-  loading,
-  orgs,
-  handleDelete,
-  handleUpdate,
-}: {
-  loading: boolean;
-  orgs: OrgModel[];
-  handleDelete: (orgId: string) => void;
-  handleUpdate: (orgData: OrgModel) => void;
-}) => {
+const OrgTable = () => {
+  const { loading, filteredOrgs, mode, handleUpdateOrg, handleDeleteOrg } = useOrg();
+
   return (
     <div className="flex flex-1 flex-col gap-2 bg-white overflow-auto">
       <div className="flex-1 overflow-auto border rounded">
@@ -43,34 +37,54 @@ const OrgTable = ({
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  className={classNames(
+                    "px-6 py-3.5 text-left text-sm font-semibold text-gray-900 transition-all duration-200",
+                    mode === "allowed" ? "hidden" : ""
+                  )}
+                >
+                  Allow
+                </th>
+                <th
+                  scope="col"
+                  className={classNames(
+                    "px-3 py-3.5 text-left text-sm font-semibold text-gray-900 transition-all duration-200",
+                    mode === "allowed" ? "" : "hidden"
+                  )}
                 >
                   isActive
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  className={classNames(
+                    "px-3 py-3.5 text-left text-sm font-semibold text-gray-900 transition-all duration-200",
+                    mode === "allowed" ? "" : "hidden"
+                  )}
                 >
                   isPremium
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  className={classNames(
+                    "px-3 py-3.5 text-left text-sm font-semibold text-gray-900 transition-all duration-200",
+                    mode === "allowed" ? "" : "hidden"
+                  )}
                 >
                   Delete
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white overflow-auto">
-              {orgs &&
-                orgs.map((org, idx) => (
+              {filteredOrgs &&
+                filteredOrgs.map((org, idx) => (
                   <OrgItem
                     key={idx}
                     org={org}
-                    handleUpdate={handleUpdate}
-                    handleDelete={handleDelete}
+                    mode={mode}
+                    handleUpdate={handleUpdateOrg}
+                    handleDelete={handleDeleteOrg}
                   />
                 ))}
+              <tr></tr>
             </tbody>
           </table>
         )}

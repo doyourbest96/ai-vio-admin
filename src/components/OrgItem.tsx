@@ -2,8 +2,19 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import ToggleButton from "@/components/extends/ToggleButton";
 import { OrgModel } from "@/services/orgService";
 import { getRelativeTime } from "@/utils/format";
+import classNames from "classnames";
 
-const OrgItem = ({ org, handleUpdate, handleDelete }: { org: OrgModel, handleUpdate: (orgData: OrgModel) => void, handleDelete: (orgId: string) => void }) => {
+const OrgItem = ({
+  org,
+  mode,
+  handleUpdate,
+  handleDelete,
+}: {
+  org: OrgModel;
+  mode: "request" | "allowed";
+  handleUpdate: (orgData: OrgModel) => void;
+  handleDelete: (orgId: string) => void;
+}) => {
   return (
     <>
       <tr className="even:bg-blue-50 hover:bg-gray-300">
@@ -16,7 +27,30 @@ const OrgItem = ({ org, handleUpdate, handleDelete }: { org: OrgModel, handleUpd
         <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
           {getRelativeTime(org.createdAt ?? "")}
         </td>
-        <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+        <td
+          className={classNames(
+            "whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3",
+            mode === "allowed" ? "hidden" : ""
+          )}
+        >
+          <span
+            className="px-3 py-1 rounded-full cursor-pointer shadow-md text-white bg-green-400 hover:bg-green-500"
+            onClick={() => {
+              handleUpdate({
+                id: org.id,
+                isActive: !org.isActive,
+              });
+            }}
+          >
+            Allow
+          </span>
+        </td>
+        <td
+          className={classNames(
+            "whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3",
+            mode === "allowed" ? "" : "hidden"
+          )}
+        >
           <ToggleButton
             checked={org.isActive ? org.isActive : false}
             handleChange={() => {
@@ -27,7 +61,12 @@ const OrgItem = ({ org, handleUpdate, handleDelete }: { org: OrgModel, handleUpd
             }}
           />
         </td>
-        <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+        <td
+          className={classNames(
+            "whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3",
+            mode === "allowed" ? "" : "hidden"
+          )}
+        >
           <ToggleButton
             checked={org.isPremium ? org.isPremium : false}
             handleChange={() =>
@@ -38,7 +77,12 @@ const OrgItem = ({ org, handleUpdate, handleDelete }: { org: OrgModel, handleUpd
             }
           />
         </td>
-        <td className="relative whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+        <td
+          className={classNames(
+            "relative whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3",
+            mode === "allowed" ? "" : "hidden"
+          )}
+        >
           <div
             className="w-7 p-1 rounded-md cursor-pointer hover:bg-gray-100"
             onClick={() => handleDelete(org.id ?? "")}

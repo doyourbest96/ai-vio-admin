@@ -12,6 +12,7 @@ export interface BaseOrgModel {
   isPremium?: boolean;
   name?: string;
   size?: boolean;
+  dmlType?: string;
 }
 
 interface ApiOrgsResponse {

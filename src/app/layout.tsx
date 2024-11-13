@@ -24,8 +24,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "AI VIO | Admin",
-  description: "AI VIO | Admin",
+  title: "AI-VIO | Admin",
+  description: "AI-VIO | Admin",
+  icons: {
+    icon: "/favicon.ico",
+  }
 };
 
 export default function RootLayout({

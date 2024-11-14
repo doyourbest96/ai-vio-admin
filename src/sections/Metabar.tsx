@@ -1,6 +1,6 @@
 "use client";
 import classNames from "classnames";
-import { useEnv } from "@/contexts/EvnContext";
+import { useEnv } from "@/contexts/EnvContext";
 import { BsLayoutTextSidebar } from "react-icons/bs";
 
 const Metabar = () => {
@@ -9,7 +9,7 @@ const Metabar = () => {
     <>
       <div
         className={classNames(
-          "w-1/6 min-w-52 h-full flex flex-col border-l",
+          "w-1/6 min-w-60 h-full flex flex-col border-l",
           openMetabar ? "" : "absolute -translate-x-full"
         )}
       >

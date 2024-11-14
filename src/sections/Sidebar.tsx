@@ -8,7 +8,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 
 import Logo from "@/components/Logo";
 
-import { useEnv } from "@/contexts/EvnContext";
+import { useEnv } from "@/contexts/EnvContext";
 import { useOrg } from "@/contexts/OrgContext";
 
 const Sidebar = () => {
@@ -19,7 +19,7 @@ const Sidebar = () => {
     <>
       <div
         className={classNames(
-          "w-1/6 min-w-52 h-full flex flex-col border-r",
+          "w-1/6 min-w-5 h-full flex flex-col border-r",
           openSidebar ? "" : "absolute -translate-x-full"
         )}
       >
@@ -41,10 +41,13 @@ const Sidebar = () => {
             <span>Dashboard</span>
           </Link>
           <div className="flex flex-col">
-            <p className="p-2 flex flex-row items-center gap-2 cursor-pointer rounded-sm hover:bg-gray-200">
+            <Link
+              href={"/orgs"}
+              className="p-2 flex flex-row items-center gap-2 cursor-pointer rounded-sm hover:bg-gray-200"
+            >
               <GoOrganization className="w-5 h-5" />
               Organizations
-            </p>
+            </Link>
             <div className="flex flex-col indent-6 text-sm">
               <p
                 className="p-2 cursor-pointer rounded-sm hover:bg-gray-200"

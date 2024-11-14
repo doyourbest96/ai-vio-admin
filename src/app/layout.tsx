@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   description: "AI-VIO | Admin",
   icons: {
     icon: "/favicon.ico",
-  }
+  },
 };
 
 export default function RootLayout({
@@ -52,7 +52,13 @@ export default function RootLayout({
             <Metabar />
           </div>
         </MainProvider>
-        <ToastContainer autoClose={2000} closeOnClick draggable />
+
+        <ToastContainer
+          autoClose={2000}
+          closeOnClick
+          draggable
+          pauseOnFocusLoss={false}
+        />
       </body>
     </html>
   );

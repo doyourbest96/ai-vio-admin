@@ -13,6 +13,11 @@ export interface BaseOrgModel {
   name?: string;
   size?: boolean;
   dmlType?: string;
+  owner?: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+  }
 }
 
 interface ApiOrgsResponse {

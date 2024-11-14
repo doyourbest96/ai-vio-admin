@@ -3,7 +3,7 @@ import { BsLayoutTextSidebar } from "react-icons/bs";
 import { BsLayoutTextSidebarReverse } from "react-icons/bs";
 import classNames from "classnames";
 
-import { useEnv } from "@/contexts/EvnContext";
+import { useEnv } from "@/contexts/EnvContext";
 
 const Header = () => {
   const { openSidebar, setOpenSidebar, openMetabar, setOpenMetabar } = useEnv();
@@ -18,7 +18,7 @@ const Header = () => {
           )}
           onClick={() => setOpenSidebar(!openSidebar)}
         />
-        Header
+        AI-VIO Admin Page
         <BsLayoutTextSidebar
           className={classNames(
             "w-8 h-8 p-2 rounded-md fill-gray-500 hover:bg-gray-200",

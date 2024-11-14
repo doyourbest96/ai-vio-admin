@@ -44,9 +44,9 @@ export default function RootLayout({
         <MainProvider>
           <div className="relative w-full h-full flex flex-1 flex-row overflow-hidden">
             <Sidebar />
-            <div className="w-full h-full flex flex-1 flex-col">
+            <div className="w-full h-full flex flex-1 flex-col overflow-auto">
               <Header />
-              <div className="p-4 flex-1">{children}</div>
+              <div className="p-4 flex-1 overflow-auto">{children}</div>
               <Footer />
             </div>
             <Metabar />

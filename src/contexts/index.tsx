@@ -1,4 +1,4 @@
-import { EnvProvider } from "@/contexts/EvnContext";
+import { EnvProvider } from "@/contexts/EnvContext";
 import { OrgProvider } from "@/contexts/OrgContext";
 
 const MainProvider = ({ children }: { children: React.ReactNode }) => {

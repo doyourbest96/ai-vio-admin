@@ -9,8 +9,8 @@ const Metabar = () => {
     <>
       <div
         className={classNames(
-          "w-1/6 min-w-60 h-full flex flex-col border-l",
-          openMetabar ? "" : "absolute -translate-x-full"
+          "absolute z-20 right-0 w-1/6 min-w-72 h-full flex flex-col border-l bg-white lg:shadow-none lg:static lg:z-0 transition-all duration-300",
+          openMetabar ? "shadow-lg" : "!absolute translate-x-full"
         )}
       >
         <div className="p-4 flex justify-end">

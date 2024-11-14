@@ -1,5 +1,6 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { requestNotificationPermission } from "@/utils/notification";
 
 interface EnvContextType {
   openSidebar: boolean;
@@ -13,6 +14,10 @@ export const EnvContext = createContext<EnvContextType | undefined>(undefined);
 export const EnvProvider = ({ children }: { children: React.ReactNode }) => {
   const [openSidebar, setOpenSidebar] = useState<boolean>(true);
   const [openMetabar, setOpenMetabar] = useState<boolean>(false);
+
+  useEffect(()=> {
+    requestNotificationPermission();
+  }, []);
 
   return (
     <EnvContext.Provider

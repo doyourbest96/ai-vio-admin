@@ -13,19 +13,27 @@ import { getRememberMe, getToken } from "@/services/authService";
 import { deleteOrg, getOrgs, OrgModel, updateOrg } from "@/services/orgService";
 import { handleError, runService } from "@/utils/service_utils";
 import { showOSNotification } from "@/utils/notification";
-import { useBrowserActivity } from "@/hooks/useBrowserActivity";
 
 interface OrgContextType {
   loading: boolean;
   orgs: OrgModel[] | undefined;
   mode: "request" | "allowed";
+  orderBy: { field: SortableFields; direction: "asc" | "desc" };
   filteredOrgs: OrgModel[] | undefined;
   setOrgs: (orgs: OrgModel[]) => void;
   setMode: (mode: "request" | "allowed") => void;
+  setOrderBy: (orderBy: OrderBy) => void;
   handleUpdateOrg: (orgData: OrgModel) => void;
   handleDeleteOrg: (orgId: string) => void;
   wsStatus: "connected" | "disconnected";
 }
+
+type SortableFields = keyof OrgModel;
+
+export type OrderBy = {
+  field: SortableFields;
+  direction: "asc" | "desc";
+};
 
 export const OrgContext = createContext<OrgContextType | undefined>(undefined);
 
@@ -34,10 +42,18 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
   const [orgs, setOrgs] = useState<OrgModel[]>();
   const [filteredOrgs, setFilteredOrgs] = useState<OrgModel[]>();
   const [mode, setMode] = useState<"request" | "allowed">("allowed");
+  const [orderBy, setOrderBy] = useState<OrderBy>({
+    field: "createdAt",
+    direction: "asc",
+  });
+
   const [wsStatus, setWsStatus] = useState<"connected" | "disconnected">(
     "disconnected"
   );
-  const isBrowserActive = useBrowserActivity();
+
+  const isBrowserActive = useCallback(() => {
+    return document.visibilityState === "visible";
+  }, []);
 
   const ws = useRef<WebSocket | null>(null);
 
@@ -49,16 +65,19 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
 
     ws.current.onopen = () => {
       setWsStatus("connected");
-      showOSNotification(
-        "Server Connected",
-        "Real-time updates are now active"
-      );
+      if (isBrowserActive() === true)
+        toast.info("Real-time updates are now active");
+      else
+        showOSNotification(
+          "Server Connected",
+          "Real-time updates are now active"
+        );
     };
 
     ws.current.onclose = () => {
       setWsStatus("disconnected");
-      // Attempt to reconnect after 10 seconds
-      setTimeout(connectWebSocket, 10 * 1000);
+      // Attempt to reconnect after 1 min
+      setTimeout(connectWebSocket, 60 * 1000);
     };
 
     ws.current.onmessage = (event) => {
@@ -71,7 +90,7 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
               org.id === message.data.id ? message.data : org
             )
           );
-          if (isBrowserActive)
+          if (isBrowserActive() === true)
             toast.info(`${message.data.name} has been modified`);
           else
             showOSNotification(
@@ -81,7 +100,8 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
           break;
         case "DELETE":
           setOrgs((orgs) => orgs?.filter((org) => org.id !== message.data.id));
-          if (isBrowserActive) toast.info("An organization has been removed");
+          if (isBrowserActive() === true)
+            toast.info("An organization has been removed");
           else
             showOSNotification(
               "Organization Deleted",
@@ -91,7 +111,7 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
         case "CREATE":
           console.log("org: ", message.data);
           setOrgs((orgs) => [...(orgs || []), message.data]);
-          if (isBrowserActive)
+          if (isBrowserActive() === true)
             toast.info(`${message.data.name} has been added`);
           else
             showOSNotification(
@@ -166,12 +186,34 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
   }, [connectWebSocket]);
 
   useEffect(() => {
-    if (mode === "request") {
-      setFilteredOrgs(orgs?.filter((org) => org.dmlType === "insert"));
-    } else {
-      setFilteredOrgs(orgs?.filter((org) => org.dmlType !== "insert"));
-    }
-  }, [mode, orgs]);
+     if (!orgs) return;
+
+     let filtered =
+       mode === "request"
+         ? orgs.filter((org) => org.dmlType === "insert")
+         : orgs.filter((org) => org.dmlType !== "insert");
+
+     if (orderBy) {
+       filtered = filtered.sort((a, b) => {
+         const aValue =
+           orderBy.field.includes("date") && a[orderBy.field]
+             ? new Date(a[orderBy.field] as string).getTime()
+             : String(a[orderBy.field] ?? "").toLowerCase();
+
+         const bValue =
+           orderBy.field.includes("date") && b[orderBy.field]
+             ? new Date(b[orderBy.field] as string).getTime()
+             : String(b[orderBy.field] ?? "").toLowerCase();
+
+         if (orderBy.direction === "desc") {
+           return bValue > aValue ? 1 : -1;
+         }
+         return aValue > bValue ? 1 : -1;
+       });
+     }
+
+     setFilteredOrgs(filtered);
+  }, [mode, orgs, orderBy]);
 
   return (
     <OrgContext.Provider
@@ -179,9 +221,11 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
         loading,
         orgs,
         mode,
+        orderBy,
         filteredOrgs,
         setOrgs,
         setMode,
+        setOrderBy,
         handleUpdateOrg,
         handleDeleteOrg,
         wsStatus,

@@ -27,6 +27,12 @@ const OrgItem = ({
         <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
           {getRelativeTime(org.createdAt ?? "")}
         </td>
+        <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+          {org.owner?.firstName} {org.owner?.lastName}
+        </td>
+        <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+          {org.owner?.email}
+        </td>
         <td
           className={classNames(
             "whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3",
@@ -38,7 +44,7 @@ const OrgItem = ({
             onClick={() => {
               handleUpdate({
                 id: org.id,
-                isActive: !org.isActive,
+                isActive: true,
               });
             }}
           >

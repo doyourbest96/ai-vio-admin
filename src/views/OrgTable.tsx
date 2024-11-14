@@ -37,6 +37,18 @@ const OrgTable = () => {
                 </th>
                 <th
                   scope="col"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
+                  Owner
+                </th>
+                <th
+                  scope="col"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
+                  Email
+                </th>
+                <th
+                  scope="col"
                   className={classNames(
                     "px-6 py-3.5 text-left text-sm font-semibold text-gray-900 transition-all duration-200",
                     mode === "allowed" ? "hidden" : ""

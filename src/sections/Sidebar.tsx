@@ -19,8 +19,8 @@ const Sidebar = () => {
     <>
       <div
         className={classNames(
-          "w-1/6 min-w-5 h-full flex flex-col border-r",
-          openSidebar ? "" : "absolute -translate-x-full"
+          "absolute z-20 w-1/6 min-w-56 h-full flex flex-col border-r bg-white lg:shadow-none lg:static lg:z-0 transition-all duration-300",
+          openSidebar ? "shadow-lg" : "!absolute -translate-x-full"
         )}
       >
         <div className="p-4">

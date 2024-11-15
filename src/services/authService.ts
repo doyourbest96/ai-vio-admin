@@ -9,7 +9,7 @@ export const login = ({
   email: string;
   password: string;
 }) => {
-  return api.post("/auth/login", { email, password });
+  return api.post("/auth2/login", { email, password });
 };
 
 export const resetPassword = ({
@@ -19,7 +19,7 @@ export const resetPassword = ({
   password: string;
   token: string;
 }) => {
-  return api.post("/auth/reset-password", { password, token });
+  return api.post("/auth2/reset-password", { password, token });
 };
 
 interface RegisterModel {
@@ -33,7 +33,7 @@ interface RegisterModel {
 
 export const requestDemo = (data: { user: RegisterModel; invite?: string }) => {
   const { user, invite } = data;
-  let url = `/auth/register`;
+  let url = `/auth2/register`;
   if (invite) {
     url += `?invite=${invite}`;
   }

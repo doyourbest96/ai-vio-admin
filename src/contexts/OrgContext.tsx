@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 import { getRememberMe, getToken } from "@/services/authService";
 import { deleteOrg, getOrgs, OrgModel, updateOrg } from "@/services/orgService";
@@ -46,6 +47,7 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
     field: "createdAt",
     direction: "asc",
   });
+  const router = useRouter();
 
   const [wsStatus, setWsStatus] = useState<"connected" | "disconnected">(
     "disconnected"
@@ -55,10 +57,11 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
     return document.visibilityState === "visible";
   }, []);
 
+  const token = getRememberMe() || getToken();
+
   const ws = useRef<WebSocket | null>(null);
 
   const connectWebSocket = useCallback(() => {
-    const token = getRememberMe() || getToken();
     ws.current = new WebSocket(
       `ws://localhost:8000/ws/connect?token=Bearer ${token}` // Add 'Bearer' prefix
     );
@@ -177,42 +180,47 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
     fetchOrgs();
     connectWebSocket();
 
     return () => {
       ws.current?.close();
     };
-  }, [connectWebSocket]);
+  }, [connectWebSocket, token, router]);
 
   useEffect(() => {
-     if (!orgs) return;
+    if (!orgs) return;
 
-     let filtered =
-       mode === "request"
-         ? orgs.filter((org) => org.dmlType === "insert")
-         : orgs.filter((org) => org.dmlType !== "insert");
+    let filtered =
+      mode === "request"
+        ? orgs.filter((org) => org.dmlType === "insert")
+        : orgs.filter((org) => org.dmlType !== "insert");
 
-     if (orderBy) {
-       filtered = filtered.sort((a, b) => {
-         const aValue =
-           orderBy.field.includes("date") && a[orderBy.field]
-             ? new Date(a[orderBy.field] as string).getTime()
-             : String(a[orderBy.field] ?? "").toLowerCase();
+    if (orderBy) {
+      filtered = filtered.sort((a, b) => {
+        const aValue =
+          orderBy.field.includes("date") && a[orderBy.field]
+            ? new Date(a[orderBy.field] as string).getTime()
+            : String(a[orderBy.field] ?? "").toLowerCase();
 
-         const bValue =
-           orderBy.field.includes("date") && b[orderBy.field]
-             ? new Date(b[orderBy.field] as string).getTime()
-             : String(b[orderBy.field] ?? "").toLowerCase();
+        const bValue =
+          orderBy.field.includes("date") && b[orderBy.field]
+            ? new Date(b[orderBy.field] as string).getTime()
+            : String(b[orderBy.field] ?? "").toLowerCase();
 
-         if (orderBy.direction === "desc") {
-           return bValue > aValue ? 1 : -1;
-         }
-         return aValue > bValue ? 1 : -1;
-       });
-     }
+        if (orderBy.direction === "desc") {
+          return bValue > aValue ? 1 : -1;
+        }
+        return aValue > bValue ? 1 : -1;
+      });
+    }
 
-     setFilteredOrgs(filtered);
+    setFilteredOrgs(filtered);
   }, [mode, orgs, orderBy]);
 
   return (

@@ -1,11 +1,14 @@
 import { EnvProvider } from "@/contexts/EnvContext";
 import { OrgProvider } from "@/contexts/OrgContext";
+import { AuthProvider } from "./AuthContext";
 
 const MainProvider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <EnvProvider>
-      <OrgProvider>{children}</OrgProvider>
-    </EnvProvider>
+    <AuthProvider>
+      <EnvProvider>
+        <OrgProvider>{children}</OrgProvider>
+      </EnvProvider>
+    </AuthProvider>
   );
 };
 

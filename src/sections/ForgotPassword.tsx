@@ -83,9 +83,9 @@ export default function ForgotPassword({
                                 <input
                                   id="email"
                                   type="text"
-                                  placeholder="username@example.com"
-                                  className="input-primary max-h-9"
                                   value={values.email}
+                                  placeholder="username@example.com"
+                                  className="block h-9 w-full px-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm border border-gray-300 hover:border-gray-500 rounded-md focus:border-gray-500"
                                   onChange={handleChange}
                                   onBlur={handleBlur}
                                 />
@@ -102,12 +102,12 @@ export default function ForgotPassword({
                             <button
                               type="submit"
                               disabled={isSubmitting}
-                              className="btn-primary"
+                              className="min-w-28 gap-2 flex-center inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-500 text-primary-foreground hover:bg-blue-400/90 h-10 px-4 py-1.5 text-white select-none font-roboto disabled:bg-gray-100"
                             >
                               Send Link
                             </button>
                             <button
-                              className="btn-secondary"
+                              className="min-w-28 gap-2 flex-center inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-primary-foreground hover:bg-gray-100/90 h-10 px-4 py-1.5 text-gray-900 select-none border font-roboto"
                               onClick={handleClose}
                             >
                               Close

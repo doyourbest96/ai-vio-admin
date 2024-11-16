@@ -32,6 +32,12 @@ export interface ForgotPasswordProps {
   handleClose: () => void;
 }
 
+export interface InviteAdminProps {
+  open: boolean;
+  handleInvite: (email: string) => void;
+  handleClose: () => void;
+}
+
 export interface CountModel {
   count?: number;
 }

@@ -69,5 +69,11 @@ export const signOut = () => {
 export const sendResetLink = async (props: { email: string }) => {
   const { email } = props;
   const data = { email };
-  return await api.post("/auth/reset", data);
+  return await api.post("/auth2/reset", data);
+};
+
+export const sendInviteLink = async (props: { email: string }) => {
+  const { email } = props;
+  const data = { email };
+  return await api.post("/api/admins/invite", data);
 };

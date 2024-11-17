@@ -129,6 +129,7 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
       console.warn("WebSocket error:", error);
       toast.error("Real-time connection error");
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchOrgs = () => {

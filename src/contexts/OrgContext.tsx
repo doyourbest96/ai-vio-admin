@@ -87,7 +87,7 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
       const message = JSON.parse(event.data);
 
       switch (message.type) {
-        case "UPDATE":
+        case "UPDATE_ORG":
           setOrgs((orgs) =>
             orgs?.map((org) =>
               org.id === message.data.id ? message.data : org
@@ -101,7 +101,7 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
               `${message.data.name} has been modified`
             );
           break;
-        case "DELETE":
+        case "DELETE_ORG":
           setOrgs((orgs) => orgs?.filter((org) => org.id !== message.data.id));
           if (isBrowserActive() === true)
             toast.info("An organization has been removed");
@@ -111,7 +111,7 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
               "An organization has been removed"
             );
           break;
-        case "CREATE":
+        case "CREATE_ORG":
           console.log("org: ", message.data);
           setOrgs((orgs) => [...(orgs || []), message.data]);
           if (isBrowserActive() === true)

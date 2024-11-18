@@ -45,7 +45,7 @@ const Sidebar = () => {
         </div>
         <div className="p-4 flex flex-col gap-2 text-gray-900">
           <Link
-            href={"/dashboard"}
+            href={"/orgs"}
             className="p-2 flex flex-row items-center gap-2 cursor-pointer rounded-sm hover:bg-gray-200"
           >
             <MdOutlineSpaceDashboard className="w-5 h-5" />
